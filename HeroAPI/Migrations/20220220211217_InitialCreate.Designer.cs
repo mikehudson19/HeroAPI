@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HeroAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220217203838_CreateInitial")]
-    partial class CreateInitial
+    [Migration("20220220211217_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

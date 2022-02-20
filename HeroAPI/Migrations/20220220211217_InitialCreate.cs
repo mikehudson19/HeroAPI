@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using HeroAPI.Models;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace HeroAPI.Migrations
 {
-    public partial class CreateInitial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,6 +24,11 @@ namespace HeroAPI.Migrations
                 {
                     table.PrimaryKey("PK_SuperHeroes", x => x.Id);
                 });
+
+            migrationBuilder.InsertData(
+                table: "SuperHeroes",
+                columns: new[] { "Id", "Name", "FirstName", "LastName", "Place" },
+                values: new object[] { 1, "Batman", "Bruce", "Wayne", "Gotham City" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
