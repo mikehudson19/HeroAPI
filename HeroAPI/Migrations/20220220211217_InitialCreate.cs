@@ -28,7 +28,14 @@ namespace HeroAPI.Migrations
             migrationBuilder.InsertData(
                 table: "SuperHeroes",
                 columns: new[] { "Id", "Name", "FirstName", "LastName", "Place" },
-                values: new object[] { 1, "Batman", "Bruce", "Wayne", "Gotham City" });
+                values: new object[,] 
+                { 
+                    { 1, "Batman", "Bruce", "Wayne", "Gotham City" },  
+                    { 2, "Spider-Man", "Peter", "Parker", "New York City" },
+                    { 3, "Aquaman", "Arthur", "Curry", "Atlantis" },
+                    { 4, "Captain America", "Stephen", "Rogers", "USA" },
+                    { 5, "Wonder Woman", "Diana", "Prince", "Themyscira" }
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
