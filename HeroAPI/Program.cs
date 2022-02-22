@@ -1,4 +1,5 @@
 global using HeroAPI.Data;
+using HeroAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,11 @@ builder.Services.AddDbContext<DataContext>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//This option can be used when there is only one repo to be registered
+//builder.Services.AddTransient<ISuperHeroRepository, SuperHeroRepository>();
+
+builder.Services.RegisterRepos();
 
 var app = builder.Build();
 
@@ -30,3 +36,14 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+public static class ServiceExtensions
+{
+    public static void RegisterRepos(this IServiceCollection collection)
+    {
+        collection.AddTransient<ISuperHeroRepository, SuperHeroRepository>();
+        //Add other repositories
+    }
+
+}

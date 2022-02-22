@@ -1,4 +1,5 @@
 ﻿using HeroAPI.Models;
+using HeroAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,17 +11,20 @@ namespace HeroAPI.Controllers
     public class SuperHeroController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly ISuperHeroRepository _repository;
 
-        public SuperHeroController(DataContext context)
+        public SuperHeroController(DataContext context, ISuperHeroRepository repository)
         {
             _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<SuperHero>>> Get()
-        {
-            List<SuperHero> heroes = await _context.SuperHeroes.ToListAsync();
-            if (heroes == null || heroes.Count == 0)
+        { // TRYING TO GET THIS WORKING - CAN'T CONVERT TASK FROM THE REPO TO A LIST HERE
+            /*List<SuperHero>*/ var heroes = _repository.GetHeroes();
+            //List<SuperHero> heroes = await _context.SuperHeroes.ToListAsync();
+            if (heroes == null)
             {
                 return NotFound("There are no more heroes");
             }
