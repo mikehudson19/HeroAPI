@@ -45,5 +45,4 @@ public static class ServiceExtensions
         collection.AddTransient<ISuperHeroRepository, SuperHeroRepository>();
         //Add other repositories
     }
-
 }

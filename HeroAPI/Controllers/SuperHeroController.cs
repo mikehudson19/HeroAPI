@@ -10,20 +10,19 @@ namespace HeroAPI.Controllers
     [ApiController]
     public class SuperHeroController : ControllerBase
     {
-        private readonly DataContext _context;
+        //private readonly DataContext _context;
         private readonly ISuperHeroRepository _repository;
 
-        public SuperHeroController(DataContext context, ISuperHeroRepository repository)
+        public SuperHeroController(ISuperHeroRepository repository)
         {
-            _context = context;
             _repository = repository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<SuperHero>>> Get()
-        { // TRYING TO GET THIS WORKING - CAN'T CONVERT TASK FROM THE REPO TO A LIST HERE
-            /*List<SuperHero>*/ var heroes = _repository.GetHeroes();
-            //List<SuperHero> heroes = await _context.SuperHeroes.ToListAsync();
+        public async Task<ActionResult<IEnumerable<SuperHero>>> Get()
+        {
+            var heroes = await _repository.GetAll();
+            
             if (heroes == null)
             {
                 return NotFound("There are no more heroes");
@@ -34,7 +33,7 @@ namespace HeroAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SuperHero>> GetHero(int id)
         {
-            var hero = await _context.SuperHeroes.FindAsync(id);
+            var hero = await _repository.Get(id);
             if (hero == null)
             {
                 return BadRequest("There was no hero.");
@@ -43,24 +42,27 @@ namespace HeroAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<SuperHero>>> AddHero(SuperHero newHero)
+        public async Task<ActionResult<List<SuperHero>>> CreateHero(SuperHero newHero)
         {
             if (newHero == null)
             {
                 return BadRequest("There is no superhero to add.");
             }
 
-            _context.SuperHeroes.Add(newHero);
-            await _context.SaveChangesAsync();
+            await _repository.Create(newHero);
 
-            return Ok();
+            return Ok(newHero);
         }
 
         [HttpPut]
-        public async Task<ActionResult<SuperHero>> UpdateHero(SuperHero heroRequest)
+        public async Task<ActionResult<SuperHero>> UpdateHero(SuperHero oldHero)
         {
-            _context.SuperHeroes.Update(heroRequest);
-            await _context.SaveChangesAsync();
+            if (oldHero == null)
+            {
+                return BadRequest("You didn't provide a hero");
+            }
+
+            await _repository.Update(oldHero);
 
             return Ok();
         }
@@ -68,16 +70,14 @@ namespace HeroAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteHero(int id)
         {
-            var dbHero = await _context.SuperHeroes.FindAsync(id);
-            if (dbHero == null)
+            var deletedHero = await _repository.Delete(id);
+
+            if (deletedHero == null)
             {
                 return NotFound("Cannot find that hero");
             }
 
-            _context.SuperHeroes.Remove(dbHero);
-            await _context.SaveChangesAsync();
-
-            return Ok();
+            return Ok(deletedHero);
         }
     }
 }
