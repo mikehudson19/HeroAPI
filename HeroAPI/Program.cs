@@ -1,5 +1,6 @@
 global using HeroAPI.Data;
 using HeroAPI.Repositories;
+using HeroAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ builder.Services.AddSwaggerGen();
 //builder.Services.AddTransient<ISuperHeroRepository, SuperHeroRepository>();
 
 builder.Services.RegisterRepos();
+builder.Services.RegisterServices();
 
 var app = builder.Build();
 
@@ -44,5 +46,10 @@ public static class ServiceExtensions
     {
         collection.AddTransient<ISuperHeroRepository, SuperHeroRepository>();
         //Add other repositories
+    }
+
+    public static void RegisterServices(this IServiceCollection collection)
+    {
+        collection.AddTransient<ISuperHeroService, SuperHeroService>();
     }
 }

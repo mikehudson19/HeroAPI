@@ -1,5 +1,6 @@
 ﻿using HeroAPI.Models;
 using HeroAPI.Repositories;
+using HeroAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,18 +11,17 @@ namespace HeroAPI.Controllers
     [ApiController]
     public class SuperHeroController : ControllerBase
     {
-        //private readonly DataContext _context;
-        private readonly ISuperHeroRepository _repository;
+        private readonly ISuperHeroService _service;
 
-        public SuperHeroController(ISuperHeroRepository repository)
+        public SuperHeroController(ISuperHeroService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SuperHero>>> Get()
         {
-            var heroes = await _repository.GetAll();
+            var heroes = await _service.GetAll();
             
             if (heroes == null)
             {
@@ -33,7 +33,7 @@ namespace HeroAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SuperHero>> GetHero(int id)
         {
-            var hero = await _repository.Get(id);
+            var hero = await _service.Get(id);
             if (hero == null)
             {
                 return BadRequest("There was no hero.");
@@ -49,7 +49,7 @@ namespace HeroAPI.Controllers
                 return BadRequest("There is no superhero to add.");
             }
 
-            await _repository.Create(newHero);
+            await _service.Create(newHero);
 
             return Ok(newHero);
         }
@@ -62,7 +62,7 @@ namespace HeroAPI.Controllers
                 return BadRequest("You didn't provide a hero");
             }
 
-            await _repository.Update(oldHero);
+            await _service.Update(oldHero);
 
             return Ok();
         }
@@ -70,7 +70,7 @@ namespace HeroAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteHero(int id)
         {
-            var deletedHero = await _repository.Delete(id);
+            var deletedHero = await _service.Delete(id);
 
             if (deletedHero == null)
             {
